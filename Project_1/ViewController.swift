@@ -71,7 +71,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         task.resume()
     }
     
-    struct Forecast: Codable {
+    /*struct Forecast: Codable {
         struct Temp: Codable {
             let temp: Double
         }
@@ -80,8 +80,36 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             let description: String
         }
         let weather: [Weather]
+    }*/
+    struct Forecast: Codable {
+        let lat: Double
+        let lon: Double
+        let timezone: String
+        let timezone_offset: Int
+        struct Current: Codable{
+            let dt: Int
+            let sunrise: Int
+            let sunset: Int
+            let temp: Double
+            let feels_like: Double
+            let pressure: Int
+            let humidity: Int
+            let dew_point: Double
+            let uvi: Double
+            let clouds: Int
+            let visibility: Int
+            let wind_speed: Int
+            let wind_deg: Int
+            struct Weather: Codable{
+                let id: Int
+                let main: String
+                let description: String
+                let icon: String
+            }
+        }
     }
 }
+            
 
 
 
