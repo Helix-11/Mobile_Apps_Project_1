@@ -35,6 +35,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         cell.textLabel?.text = String(weatherArray[indexPath.row].temperature!)
         return cell
     }
+    let url = "https://api.openweathermap.org/data/2.5/onecall?lat=40.354386155103285&lon=-94.88243178493983&units=imperial&appid=e4bbcb36109771706e78bc6514dd98e3"
+        
     
 
     @IBOutlet weak var forecastTableView: UITableView!
@@ -46,33 +48,52 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         let test1 = WeatherDay(temperature: 75, detail: "cool", minTemp: 10, maxTemp: 80, imageName: "image1")
         weatherArray.append(test1)
-        
-        let url = "https://api.openweathermap.org/data/2.5/onecall?lat=40.354386155103285&lon=-94.88243178493983&units=imperial&appid=e4bbcb36109771706e78bc6514dd98e3"
-        getData(from: url)
+    
     }
     
-    private func getData(from url: String){
-        let task = URLSession.shared.dataTask(with: URL(string:url)!, completionHandler: {data, response, error in
+    enum APIError: Error {
+        case error( errorString: String)
+    }
+    
+    private func getData<T: Decodable>(url: String,dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .deferredToDate, keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys, completion: @escaping (Result<T,APIError>) -> Void){
+        guard let url = URL(string: url)else{
+            completion(.failure(.error(errorString: NSLocalizedString("Error: Invalid URL", comment: ""))))
+            return
+        }
+        let request = URLRequest(url: url)
+        URLSession.shared.dataTask(with:request) { (data, response, error) in
+            if let error = error {
+                completion(.failure(.error(errorString: "Error: \(error.localizedDescription)")))
+                return
+            }
             
-            guard let data = data, error == nil else {
-                print("something went wrong")
+            guard let data = data else{
+                completion(.failure(.error(errorString: NSLocalizedString("Error: Data is corrupt.", comment: ""))))
                 return
             }
-            var result: Forecast?
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = dateDecodingStrategy
+            decoder.keyDecodingStrategy = keyDecodingStrategy
             do{
-                result = try JSONDecoder().decode(Forecast.self, from: data)
-            }
-            catch{
-                print("failed to convert \(error.localizedDescription)")
-            }
-            /*guard let json = result else{
+                let decodedData = try decoder.decode(T.self, from: data)
+                completion(.success(decodedData))
                 return
-            }*/
-            print(result!.lat)
-        })
-        task.resume()
+            }catch let decodingError {
+                completion(.failure(APIError.error(errorString: "Error: \(decodingError.localizedDescription)")))
+            }
+            
+        }
+        
     }
     
+    func getData(url:"https://api.openweathermap.org/data/2.5/onecall?lat=40.354386155103285&lon=-94.88243178493983&units=imperial&appid=e4bbcb36109771706e78bc6514dd98e3") { (Result<Forecast, APIError>)().self
+        in
+        switch result{
+        case .success(let Forecast):
+        case .failure(let apiError):
+        }
+        
+        
     /*struct Forecast: Codable {
         struct Temp: Codable {
             let temp: Double
@@ -88,7 +109,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let lon: Double
         let timezone: String
         let timezone_offset: Int
-        struct Current: Codable{
+        struct current: Codable{
             let dt: Int
             let sunrise: Int
             let sunset: Int
@@ -108,32 +129,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 let description: String
                 let icon: String
             }
+            let weather: [Weather]
         }
         struct Minutely: Codable{
             let dt: Int
             let precipitation: Int
         }
-        struct Hourly: Codable{
-            let dt: Int
-            let sunrise: Int
-            let sunset: Int
-            let temp: Double
-            let feels_like: Double
-            let pressure: Int
-            let humidity: Int
-            let dew_point: Double
-            let uvi: Double
-            let clouds: Int
-            let visibility: Int
-            let wind_speed: Int
-            let wind_deg: Int
-            struct Weather: Codable{
-                let id: Int
-                let main: String
-                let description: String
-                let icon: String
-            }
-        }
+
         struct Daily: Codable{
             let dt: Int
             let sunrise: Int
