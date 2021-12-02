@@ -50,6 +50,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let url = "https://api.openweathermap.org/data/2.5/onecall?lat=40.354386155103285&lon=-94.88243178493983&units=imperial&appid=e4bbcb36109771706e78bc6514dd98e3"
         getData(from: url)
     }
+    
     private func getData(from url: String){
         let task = URLSession.shared.dataTask(with: URL(string:url)!, completionHandler: {data, response, error in
             
@@ -64,9 +65,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             catch{
                 print("failed to convert \(error.localizedDescription)")
             }
-            guard let json = result else{
+            /*guard let json = result else{
                 return
-            }
+            }*/
+            print(result!.lat)
         })
         task.resume()
     }
@@ -166,7 +168,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 let icon: String
             }
             let clouds: Int
-            let pop: Int
+            let pop: Double
             let uvi: Double
         }
     }
