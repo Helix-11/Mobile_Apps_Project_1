@@ -48,6 +48,9 @@
                                             <rect key="frame" x="0.0" y="0.0" width="374" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="4wl-ED-4pa" kind="show" identifier="showDayWeather" id="eMW-sE-Rif"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <sections/>
@@ -75,7 +78,11 @@
                     </view>
                     <navigationItem key="navigationItem" id="atI-gf-o3c"/>
                     <connections>
+                        <outlet property="descriptionLabel" destination="GO7-bu-tLO" id="5bM-Di-Jqw"/>
                         <outlet property="forecastTableView" destination="xIe-p2-ZVe" id="BxQ-Zo-dsb"/>
+                        <outlet property="locationLabel" destination="s87-Kh-JdW" id="tFa-3P-JYe"/>
+                        <outlet property="temperatureLabel" destination="Mxi-gE-wR7" id="hIl-mU-oXr"/>
+                        <outlet property="weatherImage" destination="pUc-HJ-dBO" id="PVv-tL-Ibe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -151,6 +158,15 @@
                         <viewLayoutGuide key="safeArea" id="rhZ-se-Ap1"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
+                    <navigationItem key="navigationItem" id="OHO-lF-B63"/>
+                    <connections>
+                        <outlet property="dateLabel" destination="d1D-W6-Xgb" id="zLV-up-Cdf"/>
+                        <outlet property="descriptionLabel" destination="TvO-nd-aSc" id="RQJ-9V-jXD"/>
+                        <outlet property="maxtempLabel" destination="aix-d1-6JG" id="dr8-4d-T6i"/>
+                        <outlet property="mintempLabel" destination="LLP-za-GxK" id="7QW-AG-clH"/>
+                        <outlet property="temperatureLabel" destination="JJ4-Ra-ODS" id="oTM-wq-tkm"/>
+                        <outlet property="weatherImage" destination="KDr-Hg-5K6" id="TXY-SG-2gL"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3ac-d3-5MA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

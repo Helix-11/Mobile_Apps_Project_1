@@ -35,6 +35,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         cell.textLabel?.text = String(weatherArray[indexPath.row].temperature!)
         return cell
     }
+    @IBOutlet weak var locationLabel: UILabel!
+    @IBOutlet weak var temperatureLabel: UILabel!
+    @IBOutlet weak var descriptionLabel: UILabel!
+    @IBOutlet weak var weatherImage: UIImageView!
+    
+    
     let url = "https://api.openweathermap.org/data/2.5/onecall?lat=40.354386155103285&lon=-94.88243178493983&units=imperial&appid=e4bbcb36109771706e78bc6514dd98e3"
         
     
@@ -49,6 +55,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let test1 = WeatherDay(temperature: 75, detail: "cool", minTemp: 10, maxTemp: 80, imageName: "image1")
         weatherArray.append(test1)
     
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let transition = segue.identifier
+        if transition == "showDayWeather"{
+            let destination = segue.destination as! DetailViewController
+            //pass info for specific day chosen here
+            destination.test1 = "Gabbagoo"
+            
+        }
     }
     
     enum APIError: Error {
@@ -92,6 +108,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         case .success(let Forecast):
         case .failure(let apiError):
         }
+    }
         
         
     /*struct Forecast: Codable {
