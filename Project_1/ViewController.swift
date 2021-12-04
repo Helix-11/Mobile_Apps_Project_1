@@ -62,7 +62,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if transition == "showDayWeather"{
             let destination = segue.destination as! DetailViewController
             //pass info for specific day chosen here
-            //destination.temperature = temp value at tableView.indexPathForSelectedRow!.row
+            destination.temperature = weatherArray[tableView.indexPathForSelectedRow!.row].temperature
             //destination.wdescription = description at tableView.indexPathForSelectedRow!.row
             //destination.datelabel = day of week or date at tableView.indexPathForSelectedRow!.row
             //destination.weatherimage = image for tableView.indexPathForSelectedRow!.row
@@ -128,7 +128,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let lon: Double
         let timezone: String
         let timezone_offset: Int
-        struct current: Codable{
+        struct Current: Codable{
             let dt: Int
             let sunrise: Int
             let sunset: Int
@@ -150,48 +150,29 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             let weather: [Weather]
         }
-        struct Minutely: Codable{
-            let dt: Int
-            let precipitation: Int
-        }
-
-        struct Daily: Codable{
-            let dt: Int
-            let sunrise: Int
-            let sunset: Int
-            let moonrise: Int
-            let moonset: Int
-            let moon_phase: Double
-            struct temp: Codable{
-                let day: Double
+        let current: Current
+        struct Daily: Codable {
+            let dt: Date
+            struct Temp: Codable {
                 let min: Double
                 let max: Double
-                let night: Double
-                let eve: Double
-                let morn: Double
             }
-            struct feels_like: Codable{
-                let day: Double
-                let night: Double
-                let eve: Double
-                let morn: Double
-            }
-            let pressure: Int
+            let temp: Temp
             let humidity: Int
-            let dew_point: Double
-            let wind_speed: Double
-            let wind_deg: Int
-            let wind_gust: Double
-            struct weather{
+            struct Weather: Codable {
                 let id: Int
-                let main: String
                 let description: String
                 let icon: String
+                var weatherIconURL: URL {
+                    let urlString = "http://openweathermap.org/img/wn/\(icon)@2x.png"
+                    return URL(string: urlString)!
+                }
             }
+            let weather: [Weather]
             let clouds: Int
             let pop: Double
-            let uvi: Double
         }
+        let daily: [Daily]
     }
 }
             

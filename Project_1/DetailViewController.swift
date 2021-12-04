@@ -18,7 +18,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var mintempLabel: UILabel!
     
     //vars here to hold data passed in with the prepare method
-    var temperature: Int = 0
+    var temperature: Double = 0.0
     var wdescription: String = ""
     var weatherimage: String = ""
     var datelabel: String = ""
