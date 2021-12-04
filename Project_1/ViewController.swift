@@ -62,8 +62,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if transition == "showDayWeather"{
             let destination = segue.destination as! DetailViewController
             //pass info for specific day chosen here
-            destination.test1 = "Gabbagoo"
-            
+            //destination.temperature = temp value at tableView.indexPathForSelectedRow!.row
+            //destination.wdescription = description at tableView.indexPathForSelectedRow!.row
+            //destination.datelabel = day of week or date at tableView.indexPathForSelectedRow!.row
+            //destination.weatherimage = image for tableView.indexPathForSelectedRow!.row
         }
     }
     

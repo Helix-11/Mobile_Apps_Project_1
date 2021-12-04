@@ -18,12 +18,18 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var mintempLabel: UILabel!
     
     //vars here to hold data passed in with the prepare method
-    var test1: String = ""
+    var temperature: Int = 0
+    var wdescription: String = ""
+    var weatherimage: String = ""
+    var datelabel: String = ""
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //assign vars above to appropriate labels/image views.
-        temperatureLabel.text = test1
+        temperatureLabel.text = "\(temperature)"
+        descriptionLabel.text = wdescription
+        dateLabel.text = datelabel
+        weatherImage.image = UIImage(named: weatherimage)
     }
     
 
