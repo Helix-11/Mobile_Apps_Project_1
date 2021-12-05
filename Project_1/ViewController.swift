@@ -13,18 +13,56 @@ class WeatherDay{
     var minTemp: Double?
     var maxTemp: Double?
     var imageName: String?
+    var date: Date?
     
-    init(temperature:Double, detail: String, minTemp: Double, maxTemp: Double, imageName: String){
+    init(temperature:Double, detail: String, minTemp: Double, maxTemp: Double, imageName: String, date: Date){
         self.temperature = temperature
         self.detail = detail
         self.minTemp = minTemp
         self.maxTemp = maxTemp
         self.imageName = imageName
+        self.date = date
     }
     
 }
+
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    @IBOutlet weak var locationLabel: UILabel!
+    @IBOutlet weak var temperatureLabel: UILabel!
+    @IBOutlet weak var descriptionLabel: UILabel!
+    @IBOutlet weak var weatherImage: UIImageView!
+    @IBOutlet weak var forecastTableView: UITableView!
+    
     var weatherArray = [WeatherDay]()
+    let url = "https://api.openweathermap.org/data/2.5/onecall?lat=40.354386155103285&lon=-94.88243178493983&units=imperial&appid=e4bbcb36109771706e78bc6514dd98e3"
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        forecastTableView.delegate = self
+        forecastTableView.dataSource = self
+        
+        let test1 = WeatherDay(temperature: 75, detail: "cool", minTemp: 10, maxTemp: 80, imageName: "image1", date: Date.now)
+        let test2 = WeatherDay(temperature: 85, detail: "dry", minTemp: 5, maxTemp: 99, imageName: "image2", date: Date.now)
+        weatherArray.append(test1)
+        weatherArray.append(test2)
+        
+        getData(){ (result: Result<Forecast,APIError>) in
+            switch result{
+            case .success(let forecast):
+                for day in forecast.daily{
+                    print (day)
+                }
+            case .failure(let apiError):
+                switch apiError{
+                case .error(let errorString):
+                    print(errorString)
+                }
+            }
+        }
+
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         weatherArray.count
     }
@@ -35,45 +73,26 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         cell.textLabel?.text = String(weatherArray[indexPath.row].temperature!)
         return cell
     }
-    @IBOutlet weak var locationLabel: UILabel!
-    @IBOutlet weak var temperatureLabel: UILabel!
-    @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var weatherImage: UIImageView!
-    
-    
-    let url = "https://api.openweathermap.org/data/2.5/onecall?lat=40.354386155103285&lon=-94.88243178493983&units=imperial&appid=e4bbcb36109771706e78bc6514dd98e3"
-        
-    
-
-    @IBOutlet weak var forecastTableView: UITableView!
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        forecastTableView.delegate = self
-        forecastTableView.dataSource = self
-        
-        let test1 = WeatherDay(temperature: 75, detail: "cool", minTemp: 10, maxTemp: 80, imageName: "image1")
-        weatherArray.append(test1)
-    
-    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let transition = segue.identifier
         if transition == "showDayWeather"{
             let destination = segue.destination as! DetailViewController
-            //pass info for specific day chosen here
-            destination.temperature = weatherArray[tableView.indexPathForSelectedRow!.row].temperature
-            //destination.wdescription = description at tableView.indexPathForSelectedRow!.row
-            //destination.datelabel = day of week or date at tableView.indexPathForSelectedRow!.row
-            //destination.weatherimage = image for tableView.indexPathForSelectedRow!.row
+            destination.weather = weatherArray[forecastTableView.indexPathForSelectedRow!.row]
         }
     }
+    
+    
+        
+    
+    
+    
     
     enum APIError: Error {
         case error( errorString: String)
     }
     
-    private func getData<T: Decodable>(url: String,dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .deferredToDate, keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys, completion: @escaping (Result<T,APIError>) -> Void){
+    func getData<T: Decodable>(completion: @escaping (Result<T,APIError>) -> Void){
         guard let url = URL(string: url)else{
             completion(.failure(.error(errorString: NSLocalizedString("Error: Invalid URL", comment: ""))))
             return
@@ -90,8 +109,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 return
             }
             let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = dateDecodingStrategy
-            decoder.keyDecodingStrategy = keyDecodingStrategy
+            decoder.dateDecodingStrategy = .secondsSince1970
+            decoder.keyDecodingStrategy = .useDefaultKeys
             do{
                 let decodedData = try decoder.decode(T.self, from: data)
                 completion(.success(decodedData))
@@ -103,26 +122,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
     }
-    
-    func getData(url:"https://api.openweathermap.org/data/2.5/onecall?lat=40.354386155103285&lon=-94.88243178493983&units=imperial&appid=e4bbcb36109771706e78bc6514dd98e3") { (Result<Forecast, APIError>)().self
-        in
-        switch result{
-        case .success(let Forecast):
-        case .failure(let apiError):
-        }
-    }
         
-        
-    /*struct Forecast: Codable {
-        struct Temp: Codable {
-            let temp: Double
-        }
-        let temp: Temp
-        struct Weather: Codable {
-            let description: String
-        }
-        let weather: [Weather]
-    }*/
     struct Forecast: Codable {
         let lat: Double
         let lon: Double
@@ -175,7 +175,3 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let daily: [Daily]
     }
 }
-            
-
-
-

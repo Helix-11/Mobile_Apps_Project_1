@@ -13,34 +13,40 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var weatherImage: UIImageView!
     @IBOutlet weak var dateLabel: UILabel!
-    
     @IBOutlet weak var maxtempLabel: UILabel!
     @IBOutlet weak var mintempLabel: UILabel!
     
-    //vars here to hold data passed in with the prepare method
-    var temperature: Double = 0.0
-    var wdescription: String = ""
-    var weatherimage: String = ""
-    var datelabel: String = ""
+    var weather: WeatherDay?
+    let dateFormatter = DateFormatter()
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //Set the date formatter
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateStyle = .medium
+        dateFormatter.locale = Locale(identifier: "en_US")
+
+        
         //assign vars above to appropriate labels/image views.
-        temperatureLabel.text = "\(temperature)"
-        descriptionLabel.text = wdescription
-        dateLabel.text = datelabel
-        weatherImage.image = UIImage(named: weatherimage)
+        temperatureLabel.text = String(weather!.temperature!)
+        mintempLabel.text = String(weather!.minTemp!)
+        maxtempLabel.text = String(weather!.maxTemp!)
+        descriptionLabel.text = weather!.detail!
+        dateLabel.text = dateFormatter.string(from: weather!.date!)
+        weatherImage.image = UIImage(named: weather!.imageName!)
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func loadImage(url: URL) {
+        DispatchQueue.global().async {
+            if let data = try? Data(contentsOf: url) {
+                if let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self.weatherImage.image = image
+                    }
+                }
+            }
+        }
     }
-    */
-
 }
