@@ -47,6 +47,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         weatherArray.append(test1)
         weatherArray.append(test2)
         
+        
+        
         getData(){ (result: Result<Forecast,APIError>) in
             switch result{
             case .success(let forecast):
@@ -173,5 +175,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             let pop: Double
         }
         let daily: [Daily]
+    }
+    
+    func loadImage(url: URL) {
+        DispatchQueue.global().async {
+            if let data = try? Data(contentsOf: url) {
+                if let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self.weatherImage.image = image
+                    }
+                }
+            }
+        }
     }
 }
