@@ -36,7 +36,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var weatherArray = [WeatherDay]()
     let url = "https://api.openweathermap.org/data/2.5/onecall?lat=40.354386155103285&lon=-94.88243178493983&units=imperial&appid=e4bbcb36109771706e78bc6514dd98e3"
     
-    
+    var results: Forecast?
     override func viewDidLoad() {
         super.viewDidLoad()
         forecastTableView.delegate = self
@@ -103,7 +103,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     return
                 }
                 print(result!)
-                
+                self.results = result
             })
             task.resume()
         }
