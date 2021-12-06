@@ -69,7 +69,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = forecastTableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         
-        cell.textLabel?.text = String(weatherArray[indexPath.row].temperature!)
+        cell.textLabel?.text = String("\(weatherArray[indexPath.row].date!)                   \(weatherArray[indexPath.row].temperature!)")
         return cell
     }
     
