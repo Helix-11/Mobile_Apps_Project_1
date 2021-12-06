@@ -43,16 +43,24 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         forecastTableView.delegate = self
         forecastTableView.dataSource = self
         
-        let test1 = WeatherDay(temperature: 75, detail: "cool", minTemp: 10, maxTemp: 80, imageName: "image1", date: Date.now)
-        let test2 = WeatherDay(temperature: 85, detail: "dry", minTemp: 5, maxTemp: 99, imageName: "image2", date: Date.now)
-        weatherArray.append(test1)
-        weatherArray.append(test2)
         
         apiController.getData { (result)->() in
-            print(result)
+            print(result.current.weather[0])
+            
+            /*
+            print(result.current)
+            print("---------------")
+            print(result.daily)
+             */
+            
+            DispatchQueue.main.async {
+                self.temperatureLabel.text = String(result.current.temp)
+                self.descriptionLabel.text = result.current.weather[0].desc
+                self.loadImage(url: result.current.weather[0].weatherIconURL)
+            }
         }
-        
     }
+    
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         weatherArray.count
