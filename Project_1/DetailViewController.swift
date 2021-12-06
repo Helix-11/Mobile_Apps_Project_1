@@ -30,12 +30,11 @@ class DetailViewController: UIViewController {
 
         
         //assign vars above to appropriate labels/image views.
-        temperatureLabel.text = String(weather!.temperature!)
-        mintempLabel.text! += String(weather!.minTemp!)
-        maxtempLabel.text! += String(weather!.maxTemp!)
+        mintempLabel.text! += "\(weather!.minTemp!)°F"
+        maxtempLabel.text! += "\(weather!.maxTemp!)°F"
         descriptionLabel.text = weather!.detail!
         dateLabel.text = dateFormatter.string(from: weather!.date!)
-        weatherImage.image = UIImage(named: weather!.imageName!)
+        loadImage(url: (weather?.imageUrl)!)
     }
     
     func loadImage(url: URL) {

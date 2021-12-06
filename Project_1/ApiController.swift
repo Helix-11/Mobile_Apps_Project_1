@@ -9,9 +9,8 @@ import Foundation
 import UIKit
 
 class ApiController{
-    private let url = "https://api.openweathermap.org/data/2.5/onecall?lat=40.354386155103285&lon=-94.88243178493983&units=imperial&appid=e4bbcb36109771706e78bc6514dd98e3"
     
-    func getData(completion: @escaping (Forecast)->()){
+    func getData(url: String, completion: @escaping (Forecast)->()){
             let task = URLSession.shared.dataTask(with: URL(string:url)!, completionHandler: { data, response, error in
                 
                 guard let data = data, error == nil else {
@@ -20,7 +19,9 @@ class ApiController{
                 }
                 var result: Forecast?
                 do{
-                    result = try JSONDecoder().decode(Forecast.self, from: data)
+                    let decoder = JSONDecoder()
+                    decoder.dateDecodingStrategy = .secondsSince1970
+                    result = try decoder.decode(Forecast.self, from: data)
                 }
                 catch{
                     print("failed to convert: \(error)")
@@ -60,7 +61,7 @@ struct Forecast: Codable {
             let description: String
             let icon: String
             var weatherIconURL: URL {
-                let urlString = "http://openweathermap.org/img/wn/\(icon)@2x.png"
+                let urlString = "https://openweathermap.org/img/wn/\(icon)@2x.png"
                 return URL(string: urlString)!
             }
             var desc: String{
@@ -83,7 +84,7 @@ struct Forecast: Codable {
             let description: String
             let icon: String
             var weatherIconURL: URL {
-                let urlString = "http://openweathermap.org/img/wn/\(icon)@2x.png"
+                let urlString = "https://openweathermap.org/img/wn/\(icon)@2x.png"
                 return URL(string: urlString)!
             }
             var desc: String{
