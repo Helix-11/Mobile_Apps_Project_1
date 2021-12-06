@@ -34,6 +34,8 @@ class DetailViewController: UIViewController {
         maxtempLabel.text! += "\(weather!.maxTemp!)°F"
         descriptionLabel.text = weather!.detail!
         dateLabel.text = dateFormatter.string(from: weather!.date!)
+        let imageData = try? Data(contentsOf: (weather?.imageUrl)!)
+        weatherImage.image = UIImage(data: imageData!)
         loadImage(url: (weather?.imageUrl)!)
     }
     
